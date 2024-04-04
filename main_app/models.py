@@ -11,10 +11,14 @@ from datetime import date
 
 # )
 
+class Cast(models.Model):
+    actor = models.CharField(max_length=200)
+
 class TVshow(models.Model):
     name = models.CharField(max_length=None)
     provider = models.CharField(max_length=100)
     review = models.CharField(max_length = None)
+    actors = models.ManyToManyField(Cast)
 
     def __str__(self):
         return self.name

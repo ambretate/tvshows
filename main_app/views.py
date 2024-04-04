@@ -1,8 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics
-from .models import TVshow, Viewing
-from .serializers import TVshowSerializer, ViewingSerializer
+from .models import TVshow, Viewing, Cast
+from .serializers import TVshowSerializer, ViewingSerializer, CastSerializer
 
 # Create your views here.
 class Home(APIView):
@@ -38,3 +38,19 @@ class ViewingDetail(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         show_id = self.kwargs['show_id']
         return Viewing.objects.filter(show_id=show_id)
+    
+class CastListCreate(generics.ListCreateAPIView):
+    queryset = Cast.objects.all()
+    serializer_class = CastSerializer
+
+class CastDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Cast.objects.all()
+    serializer_class = CastSerializer
+    lookup_field = 'id'
+
+class AddCastToShow(APIView):
+    def post(self, request, show_id, cast_id):
+        show = TVshow.objects.get(id=show_id)
+        actor = Cast.objects.get(id=cast_id)
+        show.actors.add(actor)
+        return Response({'message': f'Cast {actor.name} added to show {show.name}'})
