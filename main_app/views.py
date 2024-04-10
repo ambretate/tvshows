@@ -19,6 +19,10 @@ class TVshowDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TVshowSerializer
     lookup_field = 'id'
 
+    # def retrieve(self, request, *args, **kwargs):
+    #     instance = self.get_object()
+    #     serializer = self.get_serializer(instance)
+
 class ViewingListCreate(generics.ListCreateAPIView):
     serializer_class = ViewingSerializer
 
@@ -53,4 +57,12 @@ class AddCastToShow(APIView):
         show = TVshow.objects.get(id=show_id)
         actor = Cast.objects.get(id=cast_id)
         show.actors.add(actor)
-        return Response({'message': f'Cast {actor.name} added to show {show.name}'})
+        return Response({'message': f'Cast {actor.actor} added to show {show.name}'})
+    
+
+class RemoveCastFromShow(APIView):
+    def post (self, request, show_id, cast_id):
+        show = TVshow.objects.get(id=show_id)
+        actor = Cast.objects.get(id=cast_id)
+        show.actors.remove(actor)
+        return Response ({'message': f'Cast {actor.actor} removed from show {show.name}'})
